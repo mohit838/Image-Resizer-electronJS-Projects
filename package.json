@@ -1,6 +1,6 @@
 {
   "name": "image-resizer-electronjs-projects",
-  "productName": "gRio Image Resizer App",
+  "productName": "gIR",
   "version": "1.0.0",
   "description": "Very Simple Desktop Image Resizer App Projects Using electron JS",
   "main": "main.js",
