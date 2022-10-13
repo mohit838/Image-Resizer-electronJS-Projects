@@ -15,3 +15,7 @@ Very Simple Desktop Image Resizer App Projects Using electron JS
 ## Add Script in Package.json file
 
     "start": "electron ."
+
+## Restart Problem Solve By
+
+    npx electronmon .
