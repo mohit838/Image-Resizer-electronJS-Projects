@@ -29,5 +29,10 @@
   "bugs": {
     "url": "https://github.com/mohit838/Image-Resizer-electronJS-Projects/issues"
   },
-  "homepage": "https://github.com/mohit838/Image-Resizer-electronJS-Projects#readme"
+  "homepage": "https://github.com/mohit838/Image-Resizer-electronJS-Projects#readme",
+  "dependencies": {
+    "electron": "^21.1.1",
+    "resize-img": "^2.0.0",
+    "toastify-js": "^1.12.0"
+  }
 }
