@@ -1,13 +1,13 @@
 const path = require("path");
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, Menu } = require("electron");
 
 //NODE_ENV
 const isDev = process.env.NODE_ENV !== "production";
 
 // For Cross Platfrom
 const isWindows = process.platform === "win32";
-const isMac = process.platform === "darwin";
 
+// Create Main Window
 function createMainWindow() {
   const mainWindow = new BrowserWindow({
     title: "gRio Image Resizer",
@@ -23,8 +23,25 @@ function createMainWindow() {
   mainWindow.loadFile(path.join(__dirname, "./renderer/index.html"));
 }
 
+// Create About Window
+function createAboutWindow() {
+  aboutWindow = new BrowserWindow({
+    width: isDev ? 400 : 500,
+    height: 400,
+    title: "About Electron",
+  });
+
+  aboutWindow.loadFile(path.join(__dirname, "./renderer/about.html"));
+}
+
+// App Ready
 app.whenReady().then(() => {
   createMainWindow();
+
+  //Implement Menu
+
+  const mainMenu = Menu.buildFromTemplate(menu);
+  Menu.setApplicationMenu(mainMenu);
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -33,8 +50,64 @@ app.whenReady().then(() => {
   });
 });
 
+// Menu Template
+const menu = [
+  ...(isWindows
+    ? [
+        {
+          label: app.name,
+          submenu: [
+            {
+              label: "About",
+              click: createAboutWindow,
+            },
+          ],
+        },
+      ]
+    : []),
+  {
+    role: "fileMenu",
+  },
+  ...(!isWindows
+    ? [
+        {
+          label: "Help",
+          submenu: [
+            {
+              label: "About",
+              click: createAboutWindow,
+            },
+          ],
+        },
+      ]
+    : []),
+  // {
+  //   label: 'File',
+  //   submenu: [
+  //     {
+  //       label: 'Quit',
+  //       click: () => app.quit(),
+  //       accelerator: 'CmdOrCtrl+W',
+  //     },
+  //   ],
+  // },
+  ...(isDev
+    ? [
+        {
+          label: "Developer",
+          submenu: [
+            { role: "reload" },
+            { role: "forcereload" },
+            { type: "separator" },
+            { role: "toggledevtools" },
+          ],
+        },
+      ]
+    : []),
+];
+
 app.on("window-all-closed", () => {
-  if (!isWindows || !isMac) {
+  if (!isWindows) {
     app.quit();
   }
 });
