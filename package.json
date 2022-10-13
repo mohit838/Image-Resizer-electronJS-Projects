@@ -5,6 +5,7 @@
   "description": "Very Simple Desktop Image Resizer App Projects Using electron JS",
   "main": "main.js",
   "scripts": {
+    "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
