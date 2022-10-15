@@ -13,6 +13,11 @@ function createMainWindow() {
     title: "gRio Image Resizer",
     width: isDev ? 1000 : 500,
     height: 600,
+    webPreferences: {
+      contextIsolation: true,
+      nodeIntegration: true,
+      preload: path.join(__dirname, "preload.js"),
+    },
   });
 
   // Open Dev Tools in Dev Mode
@@ -81,16 +86,6 @@ const menu = [
         },
       ]
     : []),
-  // {
-  //   label: 'File',
-  //   submenu: [
-  //     {
-  //       label: 'Quit',
-  //       click: () => app.quit(),
-  //       accelerator: 'CmdOrCtrl+W',
-  //     },
-  //   ],
-  // },
   ...(isDev
     ? [
         {
