@@ -7,8 +7,10 @@ const { app, BrowserWindow, Menu, ipcMain, shell } = require("electron");
 let mainWindow;
 let aboutWindow;
 
+process.env.NODE_ENV = "production";
+
 //NODE_ENV
-const isDev = process.env.NODE_ENV === "production";
+const isDev = process.env.NODE_ENV !== "production";
 
 // For Cross Platfrom
 const isWindows = process.platform === "win32";
