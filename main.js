@@ -1,5 +1,11 @@
 const path = require("path");
-const { app, BrowserWindow, Menu } = require("electron");
+const os = require("os");
+const fs = require("fs");
+const resizeImg = require("resize-img");
+const { app, BrowserWindow, Menu, ipcMain, shell } = require("electron");
+
+let mainWindow;
+let aboutWindow;
 
 //NODE_ENV
 const isDev = process.env.NODE_ENV !== "production";
@@ -9,10 +15,11 @@ const isWindows = process.platform === "win32";
 
 // Create Main Window
 function createMainWindow() {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     title: "gRio Image Resizer",
     width: isDev ? 1000 : 500,
     height: 600,
+    icon: `${__dirname}/assets/icons/Icon_256x256.png`,
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: true,
@@ -33,7 +40,8 @@ function createAboutWindow() {
   aboutWindow = new BrowserWindow({
     width: isDev ? 400 : 500,
     height: 400,
-    title: "About Electron",
+    title: "About Image Resizer",
+    icon: `${__dirname}/assets/icons/Icon_256x256.png`,
   });
 
   aboutWindow.loadFile(path.join(__dirname, "./renderer/about.html"));
@@ -100,6 +108,13 @@ const menu = [
       ]
     : []),
 ];
+
+// Respond to the resize image event
+ipcMain.on("image:resize", (e, options) => {
+  // console.log(options);
+  options.dest = path.join(os.homedir(), "imageresizer");
+  resizeImage(options);
+});
 
 app.on("window-all-closed", () => {
   if (!isWindows) {
