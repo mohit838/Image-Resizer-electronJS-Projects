@@ -8,7 +8,7 @@ let mainWindow;
 let aboutWindow;
 
 //NODE_ENV
-const isDev = process.env.NODE_ENV !== "production";
+const isDev = process.env.NODE_ENV === "production";
 
 // For Cross Platfrom
 const isWindows = process.platform === "win32";
@@ -116,8 +116,44 @@ ipcMain.on("image:resize", (e, options) => {
   resizeImage(options);
 });
 
-app.on("window-all-closed", () => {
-  if (!isWindows) {
-    app.quit();
+// Resize and save image
+async function resizeImage({ imgPath, height, width, dest }) {
+  try {
+    // console.log(imgPath, height, width, dest);
+
+    // Resize image
+    const newPath = await resizeImg(fs.readFileSync(imgPath), {
+      width: +width,
+      height: +height,
+    });
+
+    // Get filename
+    const filename = path.basename(imgPath);
+
+    // Create destination folder if it doesn't exist
+    if (!fs.existsSync(dest)) {
+      fs.mkdirSync(dest);
+    }
+
+    // Write the file to the destination folder
+    fs.writeFileSync(path.join(dest, filename), newPath);
+
+    // Send success to renderer
+    mainWindow.webContents.send("image:done");
+
+    // Open the folder in the file explorer
+    shell.openPath(dest);
+  } catch (err) {
+    console.log(err);
   }
+}
+
+// Quit when all windows are closed.
+app.on("window-all-closed", () => {
+  if (!isWindows) app.quit();
+});
+
+// Open a window if none are open
+app.on("activate", () => {
+  if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
 });
